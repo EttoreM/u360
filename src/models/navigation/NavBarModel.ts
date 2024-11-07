@@ -1,10 +1,19 @@
-import { mdiViewDashboard, mdiLightbulbOutline , mdiInformationOutline, mdiLoginVariant, mdiMapOutline } from '@mdi/js';
+import { 
+  mdiViewDashboard, 
+  mdiLightbulb, 
+  mdiInformation, 
+  mdiLoginVariant,
+  mdiMap, 
+  mdiLogin, 
+  mdiLogout,
+  mdiAccount
+} from '@mdi/js';
 
 
 interface NavBarItem {
-  label: string;
+  label:  string;
   target: string;
-  icon: string;
+  icon:   string;
 }
 
 const NavBarModel: Record<string, NavBarItem> = {
@@ -13,20 +22,20 @@ const NavBarModel: Record<string, NavBarItem> = {
     target: "/",
     icon: mdiViewDashboard
   },
-  SENSORS: {
+  MAP: {
     label: "Map",
     target: "/map",
-    icon: mdiMapOutline
+    icon: mdiMap
   },
-  PROJECTS: {
-    label: "Projects",
-    target: "/projects",
-    icon: mdiLightbulbOutline 
+  DEPLOYMENTS: {
+    label: "Deployments",
+    target: "/deployments",
+    icon: mdiLightbulb 
   },
-  ABOUT_US: {
+  ABOUT: {
     label: "About us",
     target: "/about",
-    icon: mdiInformationOutline
+    icon: mdiInformation
   },
   CREATE_DEPLOYMENT: {
     label: "create depl",
@@ -41,7 +50,12 @@ const NavBarModel: Record<string, NavBarItem> = {
   LOGIN: {
     label: "Login",
     target: "/login",
-    icon: mdiLoginVariant
+    icon: mdiLogin
+  },
+  LOGOUT: {
+    label: "Your Account",
+    target: "/your_account",
+    icon: mdiAccount
   }
 };
 

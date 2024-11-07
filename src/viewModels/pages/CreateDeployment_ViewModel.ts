@@ -4,6 +4,7 @@ import      { Modal_ViewModel }      from "../info/Modal_ViewModel";
 import      { ModalEnum }            from "../../types/info/Modal";
 import axios from "axios";
 import type { Deployment } from "../../types/db/Deployment";
+import { get } from "svelte/store";
 
 export class CreateDeployment_ViewModel {
 
@@ -13,7 +14,7 @@ export class CreateDeployment_ViewModel {
     this._model = new CreateDeployment_Model();
   }
 
-  get model() {
+  get model() : CreateDeployment_Model {
     return this._model;
   }
 
@@ -22,8 +23,31 @@ export class CreateDeployment_ViewModel {
   }
 
 
+  IsInfoComplete() {
+    const model = this.model;
+    console.log(`checking for completness`);
+    console.log(model);
+    return (
+      model.deployment?.name != null && model.deployment.name.trim() != '' &&
+      model.deployment?.label != null && model.deployment.label.trim() != '' &&
+      model.deployment?.description != null && model.deployment?.description.trim() != '' &&
+      model.deployment?.start_date != null &&
+      model.deployment?.visibility != null && model.deployment.visibility > 0
+   )
+  }
+
+
   // Post deployment
   async PostDeployment() {
+    if (!this.IsInfoComplete())
+      {
+        this.ShowModal({
+          type: ModalEnum.Warning,
+          title: `Incomplete information`,
+          message: `Please, enter all the required information. Required fields are marked with *.`
+        });
+        return;
+      }
   
     try{
       let response = await axios({

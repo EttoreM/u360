@@ -108,196 +108,179 @@
 </script>
 
 
-<div class="bg-neutral h-full w-full p-12">
-
-  <div class="card lg:card-side h-fit shadow-md bg-neutral-100 text-neutral-500 border-primary mx-auto min-w-96 max-w-4xl">
-
-    <div class="card-body max-lg:hidden">
-      <p class="title my-4 items-start text-4xl">Create a new platform</p>
-    </div>
-
-    <div class="card-body items-center lg:w-2/3">
-
-      <p class="title mb-4 lg:hidden items-start text-4xl">Create a new platform</p>
-
-        <!-- Name input field -->
-        <label class="form-control w-full">
-          <div class="label label-text text-neutral-500">Name *</div>
-          <input
-            class="input input-bordered" 
-            type="text"
-            placeholder="Max 15 chars"
-            maxlength="15"
-            bind:value={newPlatform.label} 
-          />
-        </label>
+<!-- Name input field -->
+<label class="form-control w-full">
+  <div class="label label-text text-neutral-500">Name *</div>
+  <input
+    class="input input-bordered" 
+    type="text"
+    placeholder="Max 15 chars"
+    maxlength="15"
+    bind:value={newPlatform.label} 
+  />
+</label>
 
 
-        <!-- This input element is hidden -->
-        <input id="name" name="name" type="text"value={newPlatform.name} class="grow hidden" />
+<!-- This input element is hidden -->
+<input id="name" name="name" type="text"value={newPlatform.name} class="grow hidden" />
 
 
-        <!-- Description input field -->
-        <label class="form-control w-full">
-          <div class="label label-text text-neutral-500">Description *</div>
-          <textarea 
-            class="textarea textarea-bordered flex grow w-full" 
-            bind:value={newPlatform.description} 
-          />
-        </label>
+<!-- Description input field -->
+<label class="form-control w-full">
+  <div class="label label-text text-neutral-500">Description *</div>
+  <textarea 
+    class="textarea textarea-bordered flex grow w-full" 
+    bind:value={newPlatform.description} 
+  />
+</label>
 
 
-        <!-- Deployment select element -->
-        <label class="form-control w-full">
-          <div class="label label-text text-neutral-500">Part of deployment... *</div>
-          {#if data}
-          <select 
-            class="select input-bordered text-base" 
-            bind:value={deploymentId}
-          >
-            {#each data.deployments as d}
-            <option value={d.id}>{d.label}</option>
-            {/each}
-          </select>
-          {:else}
-          <p>Error fetching data. Please try again later.</p>
-          {/if}
-        </label>
+<!-- Deployment select element -->
+<label class="form-control w-full">
+  <div class="label label-text text-neutral-500">Part of deployment... *</div>
+  {#if data}
+  <select 
+    class="select input-bordered text-base" 
+    bind:value={deploymentId}
+  >
+    {#each data.deployments as d}
+    <option value={d.id}>{d.label}</option>
+    {/each}
+  </select>
+  {:else}
+  <p>Error fetching data. Please try again later.</p>
+  {/if}
+</label>
 
 
-        <!-- Platform type select element -->
-        <label class="form-control w-full">
-          <div class="label label-text text-neutral-500">Platform type *</div>
-          {#if data}
-          <select 
-            class="select input-bordered text-base" 
-            bind:value={newPlatform.type} 
-            on:change={FilterObservablesForPlatformType}
-          >
-            {#each data.platforms_types as p}
-            <option value={p.id}>{p.label}</option>
-            {/each}
-          </select>
-          {:else}
-          <p>Error fetching data. Please try again later.</p> <!-- Handle any errors or null data -->
-          {/if}
-        </label>
+<!-- Platform type select element -->
+<label class="form-control w-full">
+  <div class="label label-text text-neutral-500">Platform type *</div>
+  {#if data}
+  <select 
+    class="select input-bordered text-base" 
+    bind:value={newPlatform.type} 
+    on:change={FilterObservablesForPlatformType}
+  >
+    {#each data.platforms_types as p}
+    <option value={p.id}>{p.label}</option>
+    {/each}
+  </select>
+  {:else}
+  <p>Error fetching data. Please try again later.</p> <!-- Handle any errors or null data -->
+  {/if}
+</label>
 
 
-        <!-- Set of selectable typical observable for the platform type -->
-        {#if $model.typicalObservables && $model.typicalObservables.length != 0}
-          <label class="form-control w-full">
-            <div class="label label-text text-neutral-500">Select the observables that the platform reads *</div>      
-            <div class="flex flex-grow text-sm flex-wrap" >
-              {#each $model.typicalObservables as o, index}
-              <label class="flex items-center bg-neutral-200  rounded-lg px-2 py-1 w-fit m-1">
-                <input
-                  value={o.id}
-                  type="checkbox"
-                  class="mr-2"
-                  id={index.toString()}
-                  on:change={() => toggleObservable(o.id)}
-                  checked={$model.observables.filter(obs => obs.observableId == o.id).length > 0}
-                />
-                <div class="tooltip hover:tooltip-open tooltip-primary tooltip-" data-tip={o.description}>
-                  {o.label}
-                </div>
-              </label>
-              {/each}
-            </div>
-          </label>
-        {/if}
-
-
-        <!-- List of selected observable -->
-        {#if $model.observables && $model.observables.length > 0}
-        <label class="form-control w-full rounded-lg p-2 bg-neutral-200">
-          <div class="label label-text text-neutral-500">The platform reads the following observables</div>
-          {#each $model.observables as so}
-          <div class="flex items-center my-1 w-full">
-            <div class="flex flex-grow-0 items-center my-1 w-20">
-              <div class="text-sm mx-2">{$model.typicalObservables.filter(to => to.id == so.observableId)[0].label}</div>
-            </div>
-            <div class="flex items-center flex-wrap flex-grow">
-              <input 
-                type="text" 
-                class="input input-sm input-bordered m-1 text-sm flex flex-grow w-2/5" 
-                placeholder="Comment (optional)"
-                on:change={(event) => SetComment(event, so.observableId)}
-              />
-
-              <!-- Select element for the observable unit -->
-              <select 
-                class="flex select select-sm input-bordered max-w-1/5 min-w-22 m-1 text-sm" 
-                on:change={(event) => SelectUnit(event, so.observableId)}
-              >
-                <option value="-1" disabled selected>Unit *</option>
-                {#each $model.recommendedUnits[so.observableId] as ru}
-                <option value={ru.id}>{ru.symbol}</option>
-                {/each}
-              </select>
-
-              <!-- Select element for the observable frequency -->
-              <select 
-                class="flex select select-sm input-bordered max-w-1/5 min-w-22 m-1 text-sm" 
-                on:change={(event) => SelectFrequency(event, so.observableId)}
-              >
-                <option value="-1" disabled selected>Freq *</option>
-                {#each data.time_intervals as ti}
-                <option value={ti.id}>{ti.symbol}</option>
-                {/each}
-              </select>
-
-            </div>
-          </div>
-          {/each}
-        </label>
-        {/if}
-
-
-        <!-- Location input elements -->
-        <label class="w-full">
-          <div class="label label-text text-neutral-500">Geolocaion *</div>
-          <div class="w-full flex gap-4 items-stretch">
-            <input 
-              type="text"
-              class="input input-bordered flex-grow" 
-              placeholder="Latitude (decimal)"
-              bind:value={latitude}
-            />
-            <input
-              type="text"
-              class="input input-bordered flex-grow" 
-              placeholder="Longitude (decimal)"
-              bind:value={longitude}
-            />
-          </div>
-        </label>
-
-
-        <!-- Visibility select element -->
-        <label class="form-control w-full">
-          <div class="label label-text text-neutral-500">Select who can see it *</div>
-          <select 
-            class="select input-bordered text-base" 
-            bind:value={visibility}
-          >
-            <option value=0>Everyone</option>
-            <option value=1>Only superusers</option>
-            <option value=2>Only you</option>
-            <option value=3>Website administrator</option>
-          </select>
-        </label>
-
-        <!-- Button area -->
-        <div class="card-actions">
-          <button class="btn mt-12 w-32 bg-accent" on:click={create_platform}>Create</button>
-          <button class="btn mt-12 w-32" on:click={ClearFields}>Clear</button>
+<!-- Set of selectable typical observable for the platform type -->
+{#if $model.typicalObservables && $model.typicalObservables.length != 0}
+  <label class="form-control w-full">
+    <div class="label label-text text-neutral-500">Select the observables that the platform reads *</div>      
+    <div class="flex flex-grow text-sm flex-wrap" >
+      {#each $model.typicalObservables as o, index}
+      <label class="flex items-center bg-neutral-200  rounded-lg px-2 py-1 w-fit m-1">
+        <input
+          value={o.id}
+          type="checkbox"
+          class="mr-2"
+          id={index.toString()}
+          on:change={() => toggleObservable(o.id)}
+          checked={$model.observables.filter(obs => obs.observableId == o.id).length > 0}
+        />
+        <div class="tooltip hover:tooltip-open tooltip-primary tooltip-" data-tip={o.description}>
+          {o.label}
         </div>
+      </label>
+      {/each}
+    </div>
+  </label>
+{/if}
+
+
+<!-- List of selected observable -->
+{#if $model.observables && $model.observables.length > 0}
+<label class="form-control w-full rounded-lg p-2 bg-neutral-200">
+  <div class="label label-text text-neutral-500">The platform reads the following observables</div>
+  {#each $model.observables as so}
+  <div class="flex items-center my-1 w-full">
+    <div class="flex flex-grow-0 items-center my-1 w-20">
+      <div class="text-sm mx-2">{$model.typicalObservables.filter(to => to.id == so.observableId)[0].label}</div>
+    </div>
+    <div class="flex items-center flex-wrap flex-grow">
+      <input 
+        type="text" 
+        class="input input-sm input-bordered m-1 text-sm flex flex-grow w-2/5" 
+        placeholder="Comment (optional)"
+        on:change={(event) => SetComment(event, so.observableId)}
+      />
+
+      <!-- Select element for the observable unit -->
+      <select 
+        class="flex select select-sm input-bordered max-w-1/5 min-w-22 m-1 text-sm" 
+        on:change={(event) => SelectUnit(event, so.observableId)}
+      >
+        <option value="-1" disabled selected>Unit *</option>
+        {#each $model.recommendedUnits[so.observableId] as ru}
+        <option value={ru.id}>{ru.symbol}</option>
+        {/each}
+      </select>
+
+      <!-- Select element for the observable frequency -->
+      <select 
+        class="flex select select-sm input-bordered max-w-1/5 min-w-22 m-1 text-sm" 
+        on:change={(event) => SelectFrequency(event, so.observableId)}
+      >
+        <option value="-1" disabled selected>Freq *</option>
+        {#each data.time_intervals as ti}
+        <option value={ti.id}>{ti.symbol}</option>
+        {/each}
+      </select>
 
     </div>
   </div>
+  {/each}
+</label>
+{/if}
 
-  <Modal />
 
+<!-- Location input elements -->
+<label class="w-full">
+  <div class="label label-text text-neutral-500">Geolocaion *</div>
+  <div class="w-full flex gap-4 items-stretch">
+    <input 
+      type="text"
+      class="input input-bordered flex-grow" 
+      placeholder="Latitude (decimal)"
+      bind:value={latitude}
+    />
+    <input
+      type="text"
+      class="input input-bordered flex-grow" 
+      placeholder="Longitude (decimal)"
+      bind:value={longitude}
+    />
+  </div>
+</label>
+
+
+<!-- Visibility select element -->
+<label class="form-control w-full">
+  <div class="label label-text text-neutral-500">Select who can see it *</div>
+  <select 
+    class="select input-bordered text-base" 
+    bind:value={visibility}
+  >
+    <option value=0>Everyone</option>
+    <option value=1>Only superusers</option>
+    <option value=2>Only you</option>
+    <option value=3>Website administrator</option>
+  </select>
+</label>
+
+<!-- Button area -->
+<div class="card-actions">
+  <button class="btn mt-12 w-32 bg-accent" on:click={create_platform}>Create</button>
+  <button class="btn mt-12 w-32" on:click={ClearFields}>Clear</button>
 </div>
+
+<Modal />

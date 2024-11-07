@@ -186,7 +186,7 @@ export class CreatePlatform_ViewModel {
 			this.ShowModal({
 				type: ModalEnum.Warning,
 				title: `Incomplete information`,
-				message: `Please, enter all the required information (required fields are marked with *)`
+				message: `Please, enter all the required information. Required fields are marked with *.`
 			});
 			return;
 		}

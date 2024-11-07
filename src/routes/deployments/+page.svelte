@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { PageData } from './$types';
+  import type { PageData } from '../deployments/$types';
   // import axios from "axios";
 
   export let data: PageData;
